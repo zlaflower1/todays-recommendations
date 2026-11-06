@@ -301,10 +301,11 @@ button:hover {
   word-break: keep-all;    /* 단어 중간에서 끊지 않아요 */
 }
 
-/* 분야별 운: 라벨은 위에 한 줄로, 문장은 아래에 오른쪽 정렬로 (문장마다 한 줄) */
+/* 분야별 운: 라벨은 왼쪽에 한 줄로, 문장은 오른쪽 정렬.
+   내용이 두 줄 이상이면 라벨이 그 가운데(세로 중앙)에 오도록 해요 */
 #area-list li {
-  flex-direction: column;
-  gap: 2px;
+  align-items: center;   /* 가로 한 줄 배치에서 세로 가운데 맞춤 */
+  gap: 12px;
 }
 
 #area-list .point-value {
