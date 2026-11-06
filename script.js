@@ -183,12 +183,22 @@ const fortuneData = {
 // ---------- 3-2. 글자를 숫자로 바꾸는 함수 ----------
 // 같은 글자를 넣으면 항상 같은 숫자가 나와요
 function stringToNumber(text) {
-  let result = 0;
+  // FNV-1a 방식: 글자를 하나씩 섞어 넣어요
+  let hash = 2166136261;
   for (let i = 0; i < text.length; i++) {
-    // 글자 하나하나의 번호(charCode)를 이용해 숫자를 섞어요
-    result = (result * 31 + text.charCodeAt(i)) % 1000000007;
+    hash ^= text.charCodeAt(i);          // 글자 번호를 섞고
+    hash = Math.imul(hash, 16777619);    // 32비트 안에서 곱해요
   }
-  return result;
+
+  // 마지막에 한 번 더 크게 섞어요. 이걸 안 하면 끝 글자(항목 이름)가 비슷할 때
+  // 결과가 몇 개 값에 쏠려요 ("행운의 시간"이 모두 똑같이 나오던 원인)
+  hash ^= hash >>> 16;
+  hash = Math.imul(hash, 0x85ebca6b);
+  hash ^= hash >>> 13;
+  hash = Math.imul(hash, 0xc2b2ae35);
+  hash ^= hash >>> 16;
+
+  return hash >>> 0;   // 음수가 나오지 않게 0 이상의 숫자로 바꿔요
 }
 
 // 목록(list)에서 하나를 골라주는 함수
