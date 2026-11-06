@@ -245,8 +245,11 @@ button:hover {
 /* ===== 6. 운세 카드 ===== */
 .fortune-summary {
   margin: 0 0 24px;
-  padding: 16px 18px;
-  font-size: 1.05rem;
+  padding: 16px 12px;
+  font-size: clamp(0.85rem, 3.7vw, 1.05rem);   /* 폰에서는 글자가 조금 작아져서 한 줄에 들어가요 */
+  text-align: center;
+  word-break: keep-all;     /* 단어 중간에서 끊기지 않고 띄어쓰기 위치에서만 줄바꿈 */
+  text-wrap: balance;       /* 두 줄이 될 때 줄 길이를 비슷하게 맞춰요 */
   white-space: pre-line;   /* 글 속의 줄바꿈(\n)을 화면에서도 줄바꿈으로 보여줘요 */
   background-color: var(--teal-soft);
   border-radius: 16px;
@@ -287,11 +290,32 @@ button:hover {
 .point-label {
   color: var(--text-sub);
   font-size: 0.9rem;
+  white-space: nowrap;   /* "금전운"처럼 라벨이 두 줄로 쪼개지지 않게 */
+  flex-shrink: 0;
 }
 
 .point-value {
   font-weight: 500;
   text-align: right;
+  white-space: pre-line;   /* 글 속의 줄바꿈(\n)을 그대로 보여줘요 */
+  word-break: keep-all;    /* 단어 중간에서 끊지 않아요 */
+}
+
+/* 분야별 운: 라벨은 위에 한 줄로, 문장은 아래에 오른쪽 정렬로 (문장마다 한 줄) */
+#area-list li {
+  flex-direction: column;
+  gap: 2px;
+}
+
+#area-list .point-value {
+  font-size: clamp(0.82rem, 3.6vw, 0.95rem);
+}
+
+/* 좁은 화면에서는 카드 안쪽 여백을 줄여서 글이 들어갈 폭을 넓혀요 */
+@media (max-width: 480px) {
+  .card {
+    padding: 24px 18px;
+  }
 }
 
 /* ===== 7. 날씨 카드 ===== */
