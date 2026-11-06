@@ -181,6 +181,39 @@ const fortuneData = {
   ]
 };
 
+// ---------- 3-1-2. 색 이름 → 실제 색 (색 견본 동그라미에 써요) ----------
+// 키(이름)는 fortuneData.luckyColors의 이름과 똑같아야 해요
+const COLOR_HEX = {
+  "딥 틸": "#1f5c5a",
+  "아이보리": "#f7f2e7",
+  "세이지 그린": "#9caf88",
+  "버터 옐로": "#f3dc8b",
+  "라벤더": "#b9a7e0",
+  "코랄": "#ff7f6e",
+  "네이비": "#1f2a5a",
+  "베이지": "#d9c7a8",
+  "스카이 블루": "#87ceeb",
+  "민트": "#98e0c6",
+  "테라코타": "#c8664a",
+  "올리브": "#808040",
+  "로즈 핑크": "#e8a1b4",
+  "차콜": "#36454f"
+};
+
+// 색 이름 글자와 색 견본 동그라미를 함께 채워요
+function setColorDisplay(textId, swatchId, colorName) {
+  document.getElementById(textId).textContent = colorName;
+
+  const swatch = document.getElementById(swatchId);
+  const hex = COLOR_HEX[colorName];
+  if (hex) {
+    swatch.style.backgroundColor = hex;
+    swatch.hidden = false;
+  } else {
+    swatch.hidden = true;   // 모르는 색 이름이면 동그라미는 숨겨요
+  }
+}
+
 // ---------- 3-2. 글자를 숫자로 바꾸는 함수 ----------
 // 같은 글자를 넣으면 항상 같은 숫자가 나와요
 function stringToNumber(text) {
@@ -273,6 +306,13 @@ function validateBirthDate(digits) {
   if (d < 1 || d > lastDay) {
     return `${m}월은 ${lastDay}일까지 있어요.`;
   }
+
+  // 오늘보다 뒤의 날짜(미래)는 막아요. 연도만 보면 "올해 12월" 같은 미래가 통과해요
+  const birth = new Date(y, m - 1, d);
+  const todayDate = new Date(year, month - 1, day);
+  if (birth > todayDate) {
+    return "오늘 이후의 날짜는 입력할 수 없어요.";
+  }
   return "";
 }
 
@@ -340,16 +380,19 @@ function renderFortune(profile) {
     oneSentencePerLine(summaryPart + "\n" + tipPart + "\n" + closingPart);
 
   document.getElementById("lucky-number").textContent = `${num1}, ${num2}`;
-  document.getElementById("lucky-color").textContent = luckyColor;
+  setColorDisplay("lucky-color", "lucky-color-swatch", luckyColor);
   document.getElementById("lucky-item").textContent = pick(fortuneData.luckyItems, seed, "item");
   document.getElementById("lucky-time").textContent = pick(fortuneData.luckyTimes, seed, "time");
 
   document.getElementById("avoid-thing").textContent = pick(fortuneData.avoidThings, seed, "avoid");
-  document.getElementById("avoid-color").textContent = avoidColor;
+  setColorDisplay("avoid-color", "avoid-color-swatch", avoidColor);
 
   document.getElementById("luck-money").textContent = oneSentencePerLine(pick(fortuneData.money, seed, "money"));
   document.getElementById("luck-love").textContent = oneSentencePerLine(pick(fortuneData.love, seed, "love"));
   document.getElementById("luck-achieve").textContent = oneSentencePerLine(pick(fortuneData.achieve, seed, "achieve"));
+
+  // 운세가 나왔으니 복사 버튼을 보여줘요
+  document.getElementById("copy-button").hidden = false;
 }
 
 // ---------- 3-6. 내 정보 저장하기 / 불러오기 / 초기화하기 ----------
@@ -421,6 +464,11 @@ function clearFortuneView() {
   ids.forEach(function (id) {
     document.getElementById(id).textContent = "-";
   });
+
+  // 색 견본 동그라미와 복사 버튼도 숨겨요
+  document.getElementById("lucky-color-swatch").hidden = true;
+  document.getElementById("avoid-color-swatch").hidden = true;
+  document.getElementById("copy-button").hidden = true;
 }
 
 // "내 정보 초기화하기" 버튼
@@ -434,6 +482,71 @@ function resetProfile() {
   savedInfo.hidden = true;
   birthForm.hidden = false;  // 입력 폼 다시 보이기
 }
+
+// ---------- 3-7. 오늘의 운세 복사하기 ----------
+// 화면에 나온 글자를 읽어서 줄바꿈이 있는 짧은 글로 만들어요
+function getFieldText(id) {
+  // 문장 사이 줄바꿈은 공백 하나로 바꿔서 한 줄로 이어요
+  return document.getElementById(id).textContent.replace(/\n/g, " ");
+}
+
+function buildShareText() {
+  const lines = [
+    `TODAY'S RECOMMENDATIONS · ${document.getElementById("today-date").textContent}`,
+    "",
+    document.getElementById("fortune-summary").textContent,   // 총운은 줄바꿈 그대로
+    "",
+    "[오늘의 행운 포인트]",
+    `행운의 숫자: ${getFieldText("lucky-number")}`,
+    `행운의 색깔: ${getFieldText("lucky-color")}`,
+    `행운의 아이템: ${getFieldText("lucky-item")}`,
+    `행운의 시간: ${getFieldText("lucky-time")}`,
+    "",
+    "[오늘의 레드 포인트]",
+    `조심할 것: ${getFieldText("avoid-thing")}`,
+    `피할 색깔: ${getFieldText("avoid-color")}`,
+    "",
+    "[분야별 운]",
+    `금전운: ${getFieldText("luck-money")}`,
+    `애정운: ${getFieldText("luck-love")}`,
+    `성취운: ${getFieldText("luck-achieve")}`
+  ];
+  return lines.join("\n");
+}
+
+// async: 클립보드에 쓰는 일은 시간이 걸릴 수 있어서 await로 기다려요
+async function copyFortune() {
+  const text = buildShareText();
+  const button = document.getElementById("copy-button");
+  let success = false;
+
+  try {
+    await navigator.clipboard.writeText(text);   // 요즘 브라우저의 기본 방법
+    success = true;
+  } catch (error) {
+    // https가 아니거나 막혀 있으면 예전 방법(임시 입력칸에 넣고 복사 명령)을 써요
+    const area = document.createElement("textarea");
+    area.value = text;
+    area.style.position = "fixed";
+    area.style.opacity = "0";
+    document.body.appendChild(area);
+    area.select();
+    try {
+      success = document.execCommand("copy");
+    } catch (e) {
+      success = false;
+    }
+    document.body.removeChild(area);
+  }
+
+  // 버튼 글자로 결과를 알려주고, 2초 뒤에 원래대로 돌려놔요
+  button.textContent = success ? "복사했어요!" : "복사하지 못했어요";
+  setTimeout(function () {
+    button.textContent = "오늘의 운세 복사하기";
+  }, 2000);
+}
+
+document.getElementById("copy-button").addEventListener("click", copyFortune);
 
 // 폼의 "제출(submit)" 이벤트가 일어나면 showFortune을 실행해요
 birthForm.addEventListener("submit", showFortune);
@@ -463,6 +576,37 @@ function getWeatherText(code) {
   if (code === 85 || code === 86) return "눈 소나기";
   if (code >= 95) return "천둥번개";
   return "알 수 없음";
+}
+
+// ---------- 4-1-2. 날씨 코드로 아이콘 고르기 ----------
+// 24x24 크기 선 그림(SVG)의 안쪽 모양만 모아둔 목록이에요
+const WEATHER_ICONS = {
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>',
+  partly: '<circle cx="7" cy="7" r="3"/><path d="M7 1v1M1 7h1M2.8 2.8l.7.7M11.2 2.8l-.7.7"/><path d="M19 19H10.5a3.5 3.5 0 1 1 .6-6.95A5 5 0 0 1 19 19z"/>',
+  cloud: '<path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/>',
+  fog: '<path d="M3 8h18M5 12h14M3 16h18M7 20h10"/>',
+  rain: '<path d="M16 13v8M8 13v8M12 15v8"/><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"/>',
+  snow: '<path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25"/><path d="M8 16h.01M8 20h.01M12 18h.01M12 22h.01M16 16h.01M16 20h.01"/>',
+  thunder: '<path d="M19 16.9A5 5 0 0 0 18 7h-1.26a8 8 0 1 0-11.62 9"/><path d="M13 11l-4 6h6l-4 6"/>'
+};
+
+// 날씨 코드를 아이콘 이름으로 바꿔요
+function getWeatherIconName(code) {
+  if (code === 0) return "sun";
+  if (code === 1 || code === 2) return "partly";
+  if (code === 3) return "cloud";
+  if (code === 45 || code === 48) return "fog";
+  if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) return "rain";
+  if ((code >= 71 && code <= 77) || code === 85 || code === 86) return "snow";
+  if (code >= 95) return "thunder";
+  return "cloud";   // 모르는 코드는 구름으로 보여줘요
+}
+
+// 아이콘 이름으로 완성된 <svg> 글자를 만들어요
+function getWeatherIcon(code) {
+  const inner = WEATHER_ICONS[getWeatherIconName(code)];
+  return '<svg viewBox="0 0 24 24" width="100%" height="100%" fill="none" stroke="currentColor" ' +
+         'stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' + inner + '</svg>';
 }
 
 // 비나 눈이 오는 날씨 코드인지 알려줘요 (true / false)
@@ -501,6 +645,8 @@ function showWeather(data, placeName) {
   }
   document.getElementById("weather-temp").textContent = `${temp}°`;
   document.getElementById("weather-desc").textContent = getWeatherText(code);
+  // 위에서 만든 SVG는 우리가 직접 쓴 고정 글자라서 innerHTML로 넣어도 안전해요
+  document.getElementById("weather-icon").innerHTML = getWeatherIcon(code);
   document.getElementById("weather-feels").textContent = `${feels}°C`;
   document.getElementById("weather-range").textContent = `${minTemp}° / ${maxTemp}°`;
   document.getElementById("weather-rain").textContent = `${rainChance}%`;

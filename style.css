@@ -242,6 +242,12 @@ button:hover {
   background-color: var(--teal-soft);
 }
 
+/* 운세 복사 버튼 */
+#copy-button {
+  width: 100%;
+  margin-top: 24px;
+}
+
 /* ===== 6. 운세 카드 ===== */
 .fortune-summary {
   margin: 0 0 24px;
@@ -301,6 +307,22 @@ button:hover {
   word-break: keep-all;    /* 단어 중간에서 끊지 않아요 */
 }
 
+/* 색 이름 앞의 색 견본 동그라미 */
+.color-value {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.swatch {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.15);   /* 아이보리처럼 연한 색도 테두리로 보이게 */
+}
+
 /* 분야별 운: 라벨은 왼쪽에 한 줄로, 문장은 오른쪽 정렬.
    내용이 두 줄 이상이면 라벨이 그 가운데(세로 중앙)에 오도록 해요 */
 #area-list li {
@@ -346,8 +368,18 @@ button:hover {
 .weather-main {
   display: flex;
   align-items: baseline;
-  gap: 14px;
+  flex-wrap: wrap;          /* 좁은 화면에서는 줄을 바꿔요 */
+  gap: 8px 14px;
   margin-bottom: 8px;
+}
+
+/* 날씨 아이콘 (선 그림, 색은 딥 틸) */
+.weather-icon {
+  align-self: center;
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  color: var(--teal);
 }
 
 .weather-temp {

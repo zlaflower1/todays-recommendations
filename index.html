@@ -151,7 +151,13 @@
         <h3>오늘의 행운 포인트</h3>
         <ul id="lucky-list" class="point-list">
           <li><span class="point-label">행운의 숫자</span><span class="point-value" id="lucky-number">-</span></li>
-          <li><span class="point-label">행운의 색깔</span><span class="point-value" id="lucky-color">-</span></li>
+          <li>
+            <span class="point-label">행운의 색깔</span>
+            <span class="point-value color-value">
+              <span class="swatch" id="lucky-color-swatch" hidden></span>
+              <span id="lucky-color">-</span>
+            </span>
+          </li>
           <li><span class="point-label">행운의 아이템</span><span class="point-value" id="lucky-item">-</span></li>
           <li><span class="point-label">행운의 시간</span><span class="point-value" id="lucky-time">-</span></li>
         </ul>
@@ -162,7 +168,13 @@
         <h3>오늘의 레드 포인트</h3>
         <ul id="avoid-list" class="point-list">
           <li><span class="point-label">조심할 것</span><span class="point-value" id="avoid-thing">-</span></li>
-          <li><span class="point-label">피할 색깔</span><span class="point-value" id="avoid-color">-</span></li>
+          <li>
+            <span class="point-label">피할 색깔</span>
+            <span class="point-value color-value">
+              <span class="swatch" id="avoid-color-swatch" hidden></span>
+              <span id="avoid-color">-</span>
+            </span>
+          </li>
         </ul>
       </div>
 
@@ -175,6 +187,9 @@
           <li><span class="point-label">성취운</span><span class="point-value" id="luck-achieve">-</span></li>
         </ul>
       </div>
+
+      <!-- 운세가 나온 뒤에만 보이는 복사 버튼 -->
+      <button type="button" id="copy-button" class="button-outline" hidden>오늘의 운세 복사하기</button>
     </section>
 
     <!-- 3. 날씨와 옷차림 (4단계에서 채울 예정) -->
@@ -193,6 +208,7 @@
 
       <!-- 현재 기온과 날씨 상태 -->
       <div class="weather-main">
+        <span id="weather-icon" class="weather-icon" aria-hidden="true"></span>
         <span id="weather-temp" class="weather-temp">--°</span>
         <span id="weather-desc" class="weather-desc">날씨를 불러오는 중...</span>
       </div>
