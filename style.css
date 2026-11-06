@@ -1,0 +1,384 @@
+/* =========================================================
+   디자인 컨셉: minimal & refined / soft & rounded /
+               editorial layout / subtle personality
+
+   색상 비율
+   - 아이보리 60%      : 페이지 배경
+   - 화이트·밝은 중성색 20% : 카드, 입력칸, 구분선
+   - 딥 틸 12%         : 제목, 버튼, 강조
+   - 세이지 버터 8%     : 포인트 배경
+   ========================================================= */
+
+/* ===== 0. 색상 변수 (여기만 바꾸면 전체 색이 바뀌어요) ===== */
+:root {
+  --ivory: #f7f2e7;          /* 아이보리 (60%) */
+  --white: #ffffff;          /* 화이트 (20%) */
+  --neutral: #ece8de;        /* 밝은 중성색 (20%) */
+  --teal: #1f5c5a;           /* 딥 틸 (12%) */
+  --teal-soft: #dfeae8;      /* 딥 틸을 연하게 */
+  --sage: #d5dba3;           /* 세이지 버터 (8%) */
+  --text: #2a2f2e;           /* 본문 글자색 */
+  --text-sub: #7a7f7a;       /* 보조 글자색 */
+}
+
+/* ===== 1. 기본 설정 ===== */
+* {
+  box-sizing: border-box;
+}
+
+/* hidden 속성이 붙은 요소는 어떤 display 설정이 있어도 확실히 숨겨요 */
+[hidden] {
+  display: none !important;
+}
+
+body {
+  margin: 0;
+  padding: 48px 16px 64px;
+  font-family: "Pretendard", -apple-system, "Malgun Gothic", sans-serif;
+  font-weight: 400;
+  background-color: var(--ivory);
+  color: var(--text);
+  line-height: 1.7;
+}
+
+/* ===== 2. 제목 영역 (에디토리얼 느낌) ===== */
+header {
+  max-width: 600px;
+  margin: 0 auto 40px;
+  text-align: left;
+  border-bottom: 1px solid var(--teal);
+  padding-bottom: 20px;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+  color: var(--teal);
+  font-weight: 500;
+}
+
+header h1 {
+  margin: 0;
+  font-size: clamp(1.05rem, 5vw, 1.5rem);   /* 화면이 좁으면 글자가 작아져요 */
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  color: var(--teal);
+}
+
+#today-date {
+  margin: 12px 0 0;
+  font-size: 0.95rem;
+  color: var(--text-sub);
+}
+
+/* ===== 3. 카드 (soft & rounded) ===== */
+main {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.card {
+  position: relative;
+  background-color: var(--white);
+  border-radius: 24px;
+  padding: 28px 24px;
+  margin-bottom: 20px;
+  border: 1px solid var(--neutral);
+}
+
+/* 카드마다 다른 포인트 색: 위쪽 가는 띠로 표현해요 */
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 24px;
+  width: 48px;
+  height: 4px;
+  border-radius: 0 0 4px 4px;
+}
+
+.card-input::before   { background-color: var(--neutral); }
+.card-fortune::before { background-color: var(--teal); }
+.card-weather::before { background-color: var(--sage); }
+
+.card-number {
+  margin: 0 0 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--text-sub);
+}
+
+.card h2 {
+  margin: 0 0 16px;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+/* ===== 4. 입력 폼 ===== */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+label {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+input[type="text"],
+select {
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--text);
+  background-color: var(--ivory);
+  border: 1px solid var(--neutral);
+  border-radius: 12px;
+}
+
+input[type="text"]:focus,
+select:focus {
+  outline: 2px solid var(--teal);
+  outline-offset: 1px;
+}
+
+#birth-time-group {
+  display: flex;
+  gap: 8px;
+}
+
+/* 양력/음력 선택 */
+.radio-group {
+  display: flex;
+  gap: 20px;
+}
+
+.radio-group label {
+  font-weight: 400;
+}
+
+input[type="radio"] {
+  accent-color: var(--teal);
+}
+
+/* 입력 오류 문구 */
+.error-message {
+  margin: -6px 0 0;
+  font-size: 0.85rem;
+  color: #b5533c;
+}
+
+#birth-time-group select {
+  flex: 1;
+}
+
+label:has(input[type="checkbox"]) {
+  font-weight: 400;
+  color: var(--text-sub);
+}
+
+input[type="checkbox"] {
+  accent-color: var(--teal);
+}
+
+select:disabled {
+  background-color: var(--neutral);
+  color: var(--text-sub);
+}
+
+/* ===== 5. 버튼 ===== */
+button {
+  margin-top: 4px;
+  padding: 14px;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: var(--white);
+  background-color: var(--teal);
+  border: none;
+  border-radius: 999px;      /* 완전히 둥근 알약 모양 */
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+button:hover {
+  opacity: 0.85;
+}
+
+/* ===== 5-2. 저장된 내 정보 ===== */
+.saved-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.saved-label {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-sub);
+}
+
+.saved-text {
+  margin: 0 0 8px;
+  font-size: 1.05rem;
+  font-weight: 500;
+}
+
+/* 테두리만 있는 버튼 (초기화 같은 보조 동작용) */
+.button-outline {
+  margin-top: 0;
+  color: var(--teal);
+  background-color: transparent;
+  border: 1px solid var(--teal);
+}
+
+.button-outline:hover {
+  opacity: 1;
+  background-color: var(--teal-soft);
+}
+
+/* ===== 6. 운세 카드 ===== */
+.fortune-summary {
+  margin: 0 0 24px;
+  padding: 16px 18px;
+  font-size: 1.05rem;
+  white-space: pre-line;   /* 글 속의 줄바꿈(\n)을 화면에서도 줄바꿈으로 보여줘요 */
+  background-color: var(--teal-soft);
+  border-radius: 16px;
+}
+
+.fortune-block {
+  margin-top: 20px;
+}
+
+.fortune-block h3 {
+  margin: 0 0 8px;
+  padding-bottom: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--teal);
+  border-bottom: 1px solid var(--neutral);
+}
+
+.point-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.point-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--neutral);
+}
+
+.point-list li:last-child {
+  border-bottom: none;
+}
+
+.point-label {
+  color: var(--text-sub);
+  font-size: 0.9rem;
+}
+
+.point-value {
+  font-weight: 500;
+  text-align: right;
+}
+
+/* ===== 7. 날씨 카드 ===== */
+.card-weather {
+  background-color: #fbfbf1;   /* 세이지 버터가 아주 살짝 비치는 흰색 */
+}
+
+.weather-place {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: -8px 0 8px;
+  font-size: 0.9rem;
+  color: var(--teal);
+}
+
+.place-icon {
+  flex-shrink: 0;
+}
+
+.weather-main {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-bottom: 8px;
+}
+
+.weather-temp {
+  font-size: 5rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--teal);
+}
+
+.weather-desc {
+  font-size: 1.4rem;
+  font-weight: 500;
+}
+
+/* 미세먼지 등급 색상 (글자색은 흰 배경에서 읽기 쉬운 진한 톤으로 골랐어요) */
+.grade-good    { color: #2e7d5b; }
+.grade-normal  { color: #8a7410; }
+.grade-bad     { color: #c0651f; }
+.grade-verybad { color: #b3392f; }
+
+.point-value.grade-good,
+.point-value.grade-normal,
+.point-value.grade-bad,
+.point-value.grade-verybad {
+  font-weight: 700;
+}
+
+/* 대기질 안내 박스: 등급 색을 왼쪽 띠로 보여줘요 */
+.air-advice {
+  margin: 12px 0 0;
+  padding: 12px 16px;
+  font-size: 0.92rem;
+  color: var(--text);
+  background-color: var(--white);
+  border-radius: 12px;
+  border-left: 4px solid currentColor;
+}
+
+/* 안내 박스는 글자색은 본문색으로 두고, 띠 색만 등급 색을 써요 */
+.air-advice.grade-good    { border-left-color: #2e7d5b; color: var(--text); }
+.air-advice.grade-normal  { border-left-color: #8a7410; color: var(--text); }
+.air-advice.grade-bad     { border-left-color: #c0651f; color: var(--text); }
+.air-advice.grade-verybad { border-left-color: #b3392f; color: var(--text); }
+
+.weather-note {
+  margin: 8px 0 0;
+  font-size: 0.78rem;
+  color: var(--text-sub);
+}
+
+.outfit-text {
+  margin: 12px 0 0;
+  padding: 16px 18px;
+  background-color: var(--sage);
+  border-radius: 16px;
+}
+
+.outfit-extra {
+  margin: 8px 0 0;
+  padding: 10px 18px;
+  font-size: 0.9rem;
+  background-color: var(--teal-soft);
+  border-radius: 12px;
+}

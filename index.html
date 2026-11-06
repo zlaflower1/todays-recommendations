@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TODAY'S RECOMMENDATIONS</title>
+
+  <!-- Pretendard 폰트 (jsDelivr CDN에서 불러와요) -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- 제목과 오늘 날짜 -->
+  <header>
+    <p class="eyebrow">DAILY EDITION</p>
+    <h1>TODAY'S RECOMMENDATIONS</h1>
+    <p id="today-date"></p>
+  </header>
+
+  <main>
+    <!-- 1. 사주 정보 입력 폼 -->
+    <section id="input-section" class="card card-input">
+      <p class="card-number">01</p>
+      <h2>내 정보 입력</h2>
+
+      <!-- 저장된 정보가 있을 때만 보이는 영역 (처음엔 숨겨져 있어요) -->
+      <div id="saved-info" class="saved-info" hidden>
+        <p class="saved-label">저장된 내 정보</p>
+        <p id="saved-info-text" class="saved-text"></p>
+        <button type="button" id="reset-button" class="button-outline">내 정보 초기화하기</button>
+      </div>
+      <form id="birth-form">
+        <label for="birth-date">생년월일</label>
+        <input type="text" id="birth-date" inputmode="numeric" maxlength="10"
+               placeholder="19940509 (숫자만 입력)" autocomplete="off" required>
+        <p id="birth-error" class="error-message" hidden></p>
+
+        <!-- 양력 / 음력 선택 -->
+        <div class="radio-group">
+          <label><input type="radio" name="calendar" value="solar" checked> 양력</label>
+          <label><input type="radio" name="calendar" value="lunar"> 음력</label>
+        </div>
+
+        <label for="birth-ampm">태어난 시간</label>
+        <div id="birth-time-group">
+          <select id="birth-ampm">
+            <option value="AM">오전</option>
+            <option value="PM">오후</option>
+          </select>
+
+          <select id="birth-hour">
+            <option value="12">12시</option>
+            <option value="1">1시</option>
+            <option value="2">2시</option>
+            <option value="3">3시</option>
+            <option value="4">4시</option>
+            <option value="5">5시</option>
+            <option value="6">6시</option>
+            <option value="7">7시</option>
+            <option value="8">8시</option>
+            <option value="9">9시</option>
+            <option value="10">10시</option>
+            <option value="11">11시</option>
+          </select>
+
+          <select id="birth-minute">
+            <option value="0">0분</option>
+            <option value="1">1분</option>
+            <option value="2">2분</option>
+            <option value="3">3분</option>
+            <option value="4">4분</option>
+            <option value="5">5분</option>
+            <option value="6">6분</option>
+            <option value="7">7분</option>
+            <option value="8">8분</option>
+            <option value="9">9분</option>
+            <option value="10">10분</option>
+            <option value="11">11분</option>
+            <option value="12">12분</option>
+            <option value="13">13분</option>
+            <option value="14">14분</option>
+            <option value="15">15분</option>
+            <option value="16">16분</option>
+            <option value="17">17분</option>
+            <option value="18">18분</option>
+            <option value="19">19분</option>
+            <option value="20">20분</option>
+            <option value="21">21분</option>
+            <option value="22">22분</option>
+            <option value="23">23분</option>
+            <option value="24">24분</option>
+            <option value="25">25분</option>
+            <option value="26">26분</option>
+            <option value="27">27분</option>
+            <option value="28">28분</option>
+            <option value="29">29분</option>
+            <option value="30">30분</option>
+            <option value="31">31분</option>
+            <option value="32">32분</option>
+            <option value="33">33분</option>
+            <option value="34">34분</option>
+            <option value="35">35분</option>
+            <option value="36">36분</option>
+            <option value="37">37분</option>
+            <option value="38">38분</option>
+            <option value="39">39분</option>
+            <option value="40">40분</option>
+            <option value="41">41분</option>
+            <option value="42">42분</option>
+            <option value="43">43분</option>
+            <option value="44">44분</option>
+            <option value="45">45분</option>
+            <option value="46">46분</option>
+            <option value="47">47분</option>
+            <option value="48">48분</option>
+            <option value="49">49분</option>
+            <option value="50">50분</option>
+            <option value="51">51분</option>
+            <option value="52">52분</option>
+            <option value="53">53분</option>
+            <option value="54">54분</option>
+            <option value="55">55분</option>
+            <option value="56">56분</option>
+            <option value="57">57분</option>
+            <option value="58">58분</option>
+            <option value="59">59분</option>
+          </select>
+        </div>
+
+        <label>
+          <input type="checkbox" id="time-unknown">
+          태어난 시간을 몰라요
+        </label>
+
+        <button type="submit">오늘의 운세 보기</button>
+      </form>
+    </section>
+
+    <!-- 2. 오늘의 운세 (3단계에서 채울 예정) -->
+    <section id="fortune-section" class="card card-fortune">
+      <p class="card-number">02</p>
+      <h2>오늘의 운세</h2>
+
+      <!-- 총운: "오늘 운세는 ~~이거야." -->
+      <p id="fortune-summary" class="fortune-summary">생년월일을 입력하면 오늘의 운세가 나타나요.</p>
+
+      <!-- 오늘의 행운 포인트: 숫자, 색깔, 아이템 등 -->
+      <div class="fortune-block">
+        <h3>오늘의 행운 포인트</h3>
+        <ul id="lucky-list" class="point-list">
+          <li><span class="point-label">행운의 숫자</span><span class="point-value" id="lucky-number">-</span></li>
+          <li><span class="point-label">행운의 색깔</span><span class="point-value" id="lucky-color">-</span></li>
+          <li><span class="point-label">행운의 아이템</span><span class="point-value" id="lucky-item">-</span></li>
+          <li><span class="point-label">행운의 시간</span><span class="point-value" id="lucky-time">-</span></li>
+        </ul>
+      </div>
+
+      <!-- 오늘의 레드 포인트: 피하면 좋은 것 -->
+      <div class="fortune-block">
+        <h3>오늘의 레드 포인트</h3>
+        <ul id="avoid-list" class="point-list">
+          <li><span class="point-label">조심할 것</span><span class="point-value" id="avoid-thing">-</span></li>
+          <li><span class="point-label">피할 색깔</span><span class="point-value" id="avoid-color">-</span></li>
+        </ul>
+      </div>
+
+      <!-- 분야별 운 -->
+      <div class="fortune-block">
+        <h3>분야별 운</h3>
+        <ul id="area-list" class="point-list">
+          <li><span class="point-label">금전운</span><span class="point-value" id="luck-money">-</span></li>
+          <li><span class="point-label">애정운</span><span class="point-value" id="luck-love">-</span></li>
+          <li><span class="point-label">성취운</span><span class="point-value" id="luck-achieve">-</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 3. 날씨와 옷차림 (4단계에서 채울 예정) -->
+    <section id="weather-section" class="card card-weather">
+      <p class="card-number">03</p>
+      <h2>날씨와 옷차림</h2>
+      <!-- 위치 아이콘 + 도시 이름 -->
+      <p class="weather-place">
+        <svg class="place-icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+          <path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z" fill="currentColor"/>
+        </svg>
+        <span id="weather-place-name">위치 확인 중...</span>
+      </p>
+
+      <!-- 현재 기온과 날씨 상태 -->
+      <div class="weather-main">
+        <span id="weather-temp" class="weather-temp">--°</span>
+        <span id="weather-desc" class="weather-desc">날씨를 불러오는 중...</span>
+      </div>
+
+      <ul class="point-list">
+        <li><span class="point-label">체감 온도</span><span class="point-value" id="weather-feels">-</span></li>
+        <li><span class="point-label">최저 / 최고</span><span class="point-value" id="weather-range">-</span></li>
+        <li><span class="point-label">강수 확률</span><span class="point-value" id="weather-rain">-</span></li>
+        <li><span class="point-label">습도</span><span class="point-value" id="weather-humidity">-</span></li>
+        <li><span class="point-label">초미세먼지 (PM2.5)</span><span class="point-value" id="air-pm25">-</span></li>
+        <li><span class="point-label">미세먼지 (PM10)</span><span class="point-value" id="air-pm10">-</span></li>
+      </ul>
+
+      <!-- 대기질에 따른 외출·마스크 안내 (대기질을 불러온 뒤에 보여요) -->
+      <p id="air-advice" class="air-advice" hidden></p>
+
+      <p id="weather-note" class="weather-note"></p>
+
+      <!-- 옷차림 추천 -->
+      <div class="fortune-block">
+        <h3>오늘의 옷차림</h3>
+        <p id="outfit-text" class="outfit-text">-</p>
+        <p id="outfit-extra" class="outfit-extra" hidden></p>
+      </div>
+    </section>
+  </main>
+
+  <!-- JavaScript 파일 연결 (HTML을 다 읽은 뒤에 실행되도록 맨 아래에 둬요) -->
+  <script src="script.js"></script>
+</body>
+</html>
