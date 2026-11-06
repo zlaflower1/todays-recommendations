@@ -633,8 +633,12 @@ async function fetchCityName(latitude, longitude) {
 
     // city가 비어 있으면 locality, 그것도 비면 principalSubdivision(시·도)을 써요
     const cityName = data.city || data.locality || data.principalSubdivision;
+    // "서울특별시" → "서울", "부산광역시" → "부산"처럼 끝의 행정구역 글자를 떼어내요
+    // 정규식 $는 "글자 끝"이라는 뜻이라, 끝에 붙은 경우만 지워요
+    const shortName = cityName ? cityName.replace(/(특별자치시|특별자치도|특별시|광역시)$/, "") : "";
+
     // 이름이 없으면 "현재 위치"라고 보여줘요
-    document.getElementById("weather-place-name").textContent = cityName || "현재 위치";
+    document.getElementById("weather-place-name").textContent = shortName || "현재 위치";
   } catch (error) {
     // 실패해도 날씨는 보이도록, "현재 위치"라고 보여줘요
     console.error(error);
@@ -646,9 +650,17 @@ async function fetchCityName(latitude, longitude) {
 function loadWeather() {
   const seoul = { latitude: 37.5665, longitude: 126.978 };
 
+  // 위치를 알 수 없을 때 서울 날씨를 보여주고, 왜 서울인지 안내 문구를 띄워요
+  function showSeoulWeather() {
+    const notice = document.getElementById("location-notice");
+    notice.textContent = "현재 위치를 확인하지 못해 서울 기준으로 보여드려요. 브라우저에서 위치를 허용하면 내 위치로 바뀌어요.";
+    notice.hidden = false;
+    fetchWeather(seoul.latitude, seoul.longitude, "서울");
+  }
+
   // 브라우저가 위치 기능을 지원하지 않으면 서울로 해요
   if (!navigator.geolocation) {
-    fetchWeather(seoul.latitude, seoul.longitude, "서울");
+    showSeoulWeather();
     return;
   }
 
@@ -662,7 +674,7 @@ function loadWeather() {
     },
     // 거부했거나 실패했을 때 실행돼요
     function () {
-      fetchWeather(seoul.latitude, seoul.longitude, "서울");
+      showSeoulWeather();
     },
     { timeout: 8000 }   // 8초 안에 못 알아내면 실패로 처리해요
   );

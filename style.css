@@ -312,6 +312,12 @@ button:hover {
   flex-shrink: 0;
 }
 
+.location-notice {
+  margin: -2px 0 10px;
+  font-size: 0.8rem;
+  color: var(--text-sub);
+}
+
 .weather-main {
   display: flex;
   align-items: baseline;
